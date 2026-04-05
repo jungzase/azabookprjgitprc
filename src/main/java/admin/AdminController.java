@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import book.BookService;
 import book.BookVO;
 import member.MemberService;
-import order.OrderService;
 
 @Controller
 public class AdminController {
@@ -18,8 +17,7 @@ public class AdminController {
     private BookService bookService;
     @Autowired
     private MemberService memberService;
-    @Autowired
-    private OrderService orderService;
+    
 
     @GetMapping("/admin/books")
     public String books(Model model) {
@@ -57,7 +55,7 @@ public class AdminController {
         return "admin/memberList";
     }
 
-    
 
+    
 }
 
