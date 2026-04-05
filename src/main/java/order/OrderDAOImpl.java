@@ -55,7 +55,15 @@ public class OrderDAOImpl implements OrderDAO {
         throw new RuntimeException("주문번호 생성에 실패했습니다.");
     }
 
-   
+    @Override
+    public int insertOrderItem(OrderItemVO item) {
+        String sql = "INSERT INTO order_items(order_id,isbn,quantity,order_price) VALUES(?,?,?,?)";
+        return jdbcTemplate.update(sql,
+                item.getOrderId(),
+                item.getIsbn(),
+                item.getQuantity(),
+                item.getOrderPrice());
+    }
 
     @Override
     public List<OrderVO> findByUserId(Long userId) {
@@ -81,7 +89,28 @@ public class OrderDAOImpl implements OrderDAO {
         }, userId);
     }
 
-    
+    @Override
+    public List<OrderVO> findAll() {
+        String sql = "SELECT o.*, u.username "
+                   + "FROM orders o "
+                   + "JOIN users u ON o.user_id = u.user_id "
+                   + "ORDER BY o.order_id DESC";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            OrderVO vo = new OrderVO();
+            vo.setOrderId(rs.getLong("order_id"));
+            vo.setUserId(rs.getLong("user_id"));
+            vo.setUsername(rs.getString("username"));
+            vo.setOrderDate(rs.getTimestamp("order_date"));
+            vo.setOrderStatus(rs.getInt("order_status"));
+            vo.setTotalPrice(rs.getInt("total_price"));
+            vo.setReceiverName(rs.getString("receiver_name"));
+            vo.setReceiverHp(rs.getString("receiver_hp"));
+            vo.setDeliveryAddress(rs.getString("delivery_address"));
+            vo.setDeliveryDetailAddress(rs.getString("delivery_detail_address"));
+            return vo;
+        });
+    }
 
     @Override
     public List<OrderItemVO> findItemsByOrderId(Long orderId) {
@@ -102,6 +131,10 @@ public class OrderDAOImpl implements OrderDAO {
         }, orderId);
     }
 
-    
+    @Override
+    public int updateStatus(Long orderId, int orderStatus) {
+        String sql = "UPDATE orders SET order_status = ? WHERE order_id = ?";
+        return jdbcTemplate.update(sql, orderStatus, orderId);
+    }
 }
 
