@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import book.BookService;
 import book.BookVO;
+import chat.ChatService;
 import member.MemberService;
 import order.OrderService;
 
@@ -20,6 +21,8 @@ public class AdminController {
     private MemberService memberService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ChatService chatService;
 
     @GetMapping("/admin/books")
     public String books(Model model) {
@@ -57,7 +60,11 @@ public class AdminController {
         return "admin/memberList";
     }
 
-    
+    @GetMapping("/admin/chat")
+    public String chaters(Model model) {
+        model.addAttribute("chatList", chatService.getChatList(null));
+        return "admin/chatList";
+    }
 
 }
 
