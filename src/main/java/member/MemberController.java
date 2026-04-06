@@ -10,8 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import order.OrderService;
-import order.OrderVO;
 
 @Controller
 public class MemberController {
@@ -19,7 +17,6 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private OrderService orderService;
 
     @GetMapping("/member/join")
     public String joinForm() {
@@ -77,13 +74,7 @@ public class MemberController {
         return "redirect:/member/mypage";
     }
 
-    @GetMapping("/member/orders")
-    public String orders(HttpSession session, Model model) {
-        MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
-        List<OrderVO> orderList = orderService.getOrderListByUser(loginUser.getUserId());
-        model.addAttribute("orderList", orderList);
-        return "member/orderList";
-    }
+    
 }
 
 
