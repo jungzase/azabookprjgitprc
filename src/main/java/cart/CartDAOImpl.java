@@ -12,7 +12,20 @@ public class CartDAOImpl implements CartDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    
+    @Override
+    public int addOrIncrease(Long userId, String isbn, int quantity) {
+        String checkSql = "SELECT COUNT(*) FROM cart WHERE user_id=? AND isbn=?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, userId, isbn);
+
+        if (count != null && count > 0) {
+            String updateSql = "UPDATE cart SET quantity = quantity + ? WHERE user_id=? AND isbn=?";
+            return jdbcTemplate.update(updateSql, quantity, userId, isbn);
+        } else {
+            String insertSql = "INSERT INTO cart(user_id,isbn,quantity) VALUES(?,?,?)";
+            return jdbcTemplate.update(insertSql, userId, isbn, quantity);
+        }
+    }
+
 
     @Override
     public List<CartVO> findByUserId(Long userId) {
@@ -31,12 +44,24 @@ public class CartDAOImpl implements CartDAO {
         }, userId);
     }
 
-    
 
     @Override
-    public boolean clear(Long userId) {
+    public int updateQuantity(Long cartId, int quantity, Long userId) {
+        String sql = "UPDATE cart SET quantity=? WHERE cart_id=? AND user_id=?";
+        return jdbcTemplate.update(sql, quantity, cartId, userId);
+    }
+
+    @Override
+    public int delete(Long cartId, Long userId) {
+        String sql = "DELETE FROM cart WHERE cart_id=? AND user_id=?";
+        return jdbcTemplate.update(sql, cartId, userId);
+    }
+
+    @Override
+    public int clear(Long userId) {
         String sql = "DELETE FROM cart WHERE user_id=?";
-        return jdbcTemplate.update(sql, userId) > 1 ? true : false;
+        return jdbcTemplate.update(sql, userId);
+
     }
 }
 
