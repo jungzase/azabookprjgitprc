@@ -10,7 +10,6 @@ import book.BookService;
 import book.BookVO;
 import chat.ChatService;
 import member.MemberService;
-import order.OrderService;
 
 @Controller
 public class AdminController {
@@ -19,10 +18,14 @@ public class AdminController {
     private BookService bookService;
     @Autowired
     private MemberService memberService;
+
     @Autowired
     private OrderService orderService;
     @Autowired
     private ChatService chatService;
+
+    
+
 
     @GetMapping("/admin/books")
     public String books(Model model) {
@@ -60,11 +63,14 @@ public class AdminController {
         return "admin/memberList";
     }
 
+
     @GetMapping("/admin/chat")
     public String chaters(Model model) {
         model.addAttribute("chatList", chatService.getChatList(null));
         return "admin/chatList";
     }
 
+
+    
 }
 
